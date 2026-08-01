@@ -136,8 +136,14 @@ git push origin main
 日常开发合并到你自己的 `main`，官方更新通过 `upstream/main` 再合并进来，这样最适合长期二开和持续跟进源仓库。
 
 ## 发布
+
+发布脚本位于仓库根目录。可以不带参数交互输入版本，也可以直接传入 tag：
+
 ```bash
-cd ./frontend/user
-pnpm run release:tag
+sh ./scripts/release-tag.sh
+sh ./scripts/release-tag.sh v1.0.1
 ```
+
+脚本会校验 tag、提交未提交的工作区改动、同步当前分支，并将 tag 推送到 `origin`。
+
 等镜像发布完成，就去服务器更新镜像

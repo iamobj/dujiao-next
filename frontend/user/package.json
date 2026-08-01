@@ -8,8 +8,7 @@
     "dev": "vite",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview",
-    "release:tag": "node ../../scripts/release-tag.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@fontsource/nunito-sans": "^5.2.7",

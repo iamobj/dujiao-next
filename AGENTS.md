@@ -13,7 +13,6 @@
 - 联系方式展示：保留后端 `whatsapp` 配置字段以兼容数据；用户端 Footer、About 和 Vault 页面按微信样式展示，并直接显示配置值，底部使用站点 logo 或 `icon.webp`。
 - 订单流交付标签：`frontend/user/src/composables/useProduct.ts` 识别 `订单流交付`，隐藏内部标签；带该标签的人工交付仅在前台显示为自动交付。购物车本地字段 `hasOrderFlowDeliveryTag` 在加入、恢复、更新时保留，不扩展后端订单 API。
 - 注册流程：classic 与 Vault 注册页不显示或强制勾选协议，`useRegister.ts` 固定发送 `agreement_accepted: true`，邮箱验证码和验证码组件逻辑保持不变。
-- 发布与镜像：`scripts/release-tag.mjs` 校验 tag、提交工作区、同步分支并推送 `origin`；`frontend/user` 提供 `release:tag`；`v*` tag 触发 GHCR 多架构镜像发布（`linux/amd64`、`linux/arm64`）。
 
 ## 开发规范
 
