@@ -8,6 +8,7 @@ import { amountToCents, centsToAmount } from '../utils/money'
 import { buildSkuDisplayTextFromSnapshot } from '../utils/sku'
 import { getImageUrl } from '../utils/image'
 import { copyText } from '../utils/clipboard'
+import { getVisibleProductTags, hasOrderFlowDeliveryTag } from './useProduct'
 
 interface ManualFormSnapshotField {
   key: string
@@ -60,7 +61,7 @@ export function useOrderDisplayHelpers(order: Ref<any>) {
     }
     return map[orderStatusVariant(status)] || 'pill-out'
   }
-  const fulfillmentTypeLabelText = (type: string) => fulfillmentTypeLabel(t, type, 'orderDetail')
+  const fulfillmentTypeLabelText = (type: string, displayAsAuto = false) => fulfillmentTypeLabel(t, type, 'orderDetail', displayAsAuto)
   const fulfillmentStatusLabelText = (status: string) => fulfillmentStatusLabel(t, status, 'orderDetail')
 
   const resolvedChildStatus = (child: any) => {
@@ -306,6 +307,8 @@ export function useOrderDisplayHelpers(order: Ref<any>) {
     statusPillClass,
     fulfillmentTypeLabelText,
     fulfillmentStatusLabelText,
+    hasOrderFlowDeliveryTag,
+    getVisibleProductTags,
     resolvedChildStatus,
     isFulfillmentTruncated,
     // 文本/格式化

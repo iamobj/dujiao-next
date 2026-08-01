@@ -35,7 +35,8 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
 
   const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
   const {
-    getPurchaseTypeLabel, getFulfillmentTypeLabel, getStockBadgeVariant, getStockStatusLabel,
+    getPurchaseTypeLabel, getFulfillmentTypeLabel, hasOrderFlowDeliveryTag, getVisibleProductTags,
+    isDisplayedAutoFulfillment, getStockBadgeVariant, getStockStatusLabel,
     hasPromotionPrice, getPromotionPriceAmount, getPromotionSaveAmount,
     hasSkuPromotionPrice, getSkuPromotionPriceAmount, getSkuPromotionSaveAmount,
     hasPromotionRules, getPromotionRules, hasWholesalePrices, getWholesalePrices,
@@ -329,6 +330,9 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
     const category = product.value?.category?.name
     return category ? getLocalizedText(category) : ''
   })
+  const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(product.value?.tags))
+  const visibleProductTags = computed(() => getVisibleProductTags(product.value?.tags))
+  const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(product.value?.fulfillment_type, hasOrderFlowDelivery.value))
 
   const images = computed(() => {
     if (!product.value?.images) return []
@@ -406,6 +410,7 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
     maxPurchaseQuantity: normalizeOptionalLimitNumber(product.value.max_purchase_quantity) ?? undefined,
     purchaseType: product.value.purchase_type,
     fulfillmentType: product.value.fulfillment_type,
+    hasOrderFlowDeliveryTag: hasOrderFlowDelivery.value,
     manualFormSchema: product.value.manual_form_schema || {},
     paymentChannelIds: Array.isArray(product.value.payment_channel_ids) && product.value.payment_channel_ids.length > 0 ? product.value.payment_channel_ids : undefined,
     quantity: quantity.value,
@@ -668,7 +673,8 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
   return {
     // 国际化/格式化（模板需要）
     getLocalizedText, siteCurrency, formatPrice,
-    getPurchaseTypeLabel, getFulfillmentTypeLabel, getStockBadgeVariant, getStockStatusLabel,
+    getPurchaseTypeLabel, getFulfillmentTypeLabel, hasOrderFlowDeliveryTag, getVisibleProductTags,
+    isDisplayedAutoFulfillment, getStockBadgeVariant, getStockStatusLabel,
     hasPromotionPrice, getPromotionPriceAmount, getPromotionSaveAmount,
     hasSkuPromotionPrice, getSkuPromotionPriceAmount, getSkuPromotionSaveAmount,
     hasPromotionRules, getPromotionRules, hasWholesalePrices, getWholesalePrices,
@@ -688,7 +694,7 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
     quantityEffectiveLimit, quantityEffectiveMin, handleQuantityInput,
     // 购买能力
     purchaseType, requiresLogin, requiresSKUSelection, canPurchase, cannotPurchaseReason,
-    categoryName, images,
+    categoryName, images, hasOrderFlowDelivery, visibleProductTags, displayedAutoFulfillment,
     // 动作
     addToCart, buyNow, goLogin, loadProduct,
     // 移动端购买条

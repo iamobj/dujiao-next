@@ -61,9 +61,9 @@
                   {{ t('productDetail.categoryLabel') }} · {{ categoryName }}
                 </div>
 
-                <div v-if="product.tags && product.tags.length > 0" class="mb-4 flex flex-wrap gap-2">
+                <div v-if="visibleProductTags.length > 0" class="mb-4 flex flex-wrap gap-2">
                   <Badge
-                    v-for="(tag, index) in product.tags"
+                    v-for="(tag, index) in visibleProductTags"
                     :key="index"
                     variant="neutral"
                   >
@@ -82,10 +82,10 @@
                     {{ getPurchaseTypeLabel(product.purchase_type) }}
                   </Badge>
 
-                  <Badge :variant="product.fulfillment_type === 'auto' ? 'info' : 'neutral'">
-                    <Zap v-if="product.fulfillment_type === 'auto'" class="h-3 w-3" />
+                  <Badge :variant="displayedAutoFulfillment ? 'info' : 'neutral'">
+                    <Zap v-if="displayedAutoFulfillment" class="h-3 w-3" />
                     <Pencil v-else class="h-3 w-3" />
-                    {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+                    {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
                   </Badge>
 
                   <Badge :variant="getStockBadgeVariant(product.stock_status)">
@@ -450,7 +450,8 @@ const setupMobileBarObserver = () => {
 // 全部业务逻辑由 useProductDetail 提供（与 vault 模板共用，保证功能一致）
 const {
   getLocalizedText, siteCurrency, formatPrice,
-  getPurchaseTypeLabel, getFulfillmentTypeLabel, getStockBadgeVariant, getStockStatusLabel,
+  getPurchaseTypeLabel, getFulfillmentTypeLabel, hasOrderFlowDelivery, visibleProductTags, displayedAutoFulfillment,
+  getStockBadgeVariant, getStockStatusLabel,
   hasPromotionPrice, getPromotionPriceAmount, getPromotionSaveAmount,
   hasSkuPromotionPrice, getSkuPromotionSaveAmount,
   hasPromotionRules, getPromotionRules,

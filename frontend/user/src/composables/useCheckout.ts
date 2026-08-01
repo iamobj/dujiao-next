@@ -53,7 +53,7 @@ export function useCheckout() {
   const { t } = useI18n()
 
   const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
-  const { resolveWholesalePriceAmount } = useProductLabels()
+  const { resolveWholesalePriceAmount, getFulfillmentTypeLabel, isDisplayedAutoFulfillment } = useProductLabels()
 
   const isBuyNowMode = computed(() => route.query.mode === 'buynow')
   const cartItems = computed<CartItem[]>(() => {
@@ -1107,6 +1107,8 @@ export function useCheckout() {
     getLocalizedText,
     formatPrice,
     getImageUrl,
+    getFulfillmentTypeLabel,
+    isDisplayedAutoFulfillment,
     // mode / items
     isBuyNowMode,
     cartItems,

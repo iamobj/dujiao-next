@@ -163,31 +163,13 @@
             </div>
           </div>
 
-          <label class="flex items-start gap-3 rounded-xl border bg-secondary px-4 py-3 text-sm text-muted-foreground transition-colors">
-            <input
-              v-model="agreed"
-              type="checkbox"
-              class="mt-0.5 h-4 w-4 rounded border-gray-300 accent-primary dark:border-white/20 dark:bg-black/20"
-            />
-            <span class="leading-6">
-              {{ t('auth.register.agreementPrefix') }}
-              <router-link to="/privacy" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline">
-                {{ t('footer.privacy') }}
-              </router-link>
-              {{ t('auth.register.agreementAnd') }}
-              <router-link to="/terms" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline">
-                {{ t('footer.terms') }}
-              </router-link>
-            </span>
-          </label>
-
           <Alert v-if="error" variant="destructive" class="text-center">
             <AlertDescription>{{ error }}</AlertDescription>
           </Alert>
 
           <Button
             type="submit"
-            :disabled="userAuthStore.loading || !agreed"
+            :disabled="userAuthStore.loading"
             class="h-11 w-full font-bold"
           >
             <UserPlus v-if="!userAuthStore.loading" class="h-4 w-4" />
@@ -226,7 +208,7 @@ const { t } = useI18n()
 
 const {
   userAuthStore, brandSiteName,
-  email, emailLocalPart, selectedEmailDomain, password, showPassword, code, agreed,
+  email, emailLocalPart, selectedEmailDomain, password, showPassword, code,
   passwordStrength, error, sending, countdown,
   captchaPayload, turnstileToken, imageCaptchaRef, turnstileRef,
   captchaProvider, sendCodeCaptchaEnabled, turnstileSiteKey,

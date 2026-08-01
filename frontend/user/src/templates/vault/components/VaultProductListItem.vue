@@ -25,6 +25,10 @@
         <component :is="stockPill.icon" class="h-3 w-3" />
         {{ stockPill.label }}
       </span>
+      <span class="inline-flex w-fit items-center gap-1 rounded-full bg-[color:var(--teal-soft)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--teal-strong)]">
+        <component :is="displayedAutoFulfillment ? Zap : Pencil" class="h-3 w-3" />
+        {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
+      </span>
     </div>
 
     <!-- Price + actions -->
@@ -53,7 +57,7 @@
 <script setup lang="ts">
 import { computed, ref, type Component } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AlarmClock, ChevronRight, Package, ShoppingCart, XCircle, Zap } from 'lucide-vue-next'
+import { AlarmClock, ChevronRight, Package, Pencil, ShoppingCart, XCircle, Zap } from 'lucide-vue-next'
 import { getFirstImageUrl, getImageUrl } from '../../../utils/image'
 import { useLocalized, useProductLabels } from '../../../composables/useProduct'
 
@@ -63,7 +67,15 @@ defineEmits<{ quickBuy: [product: any] }>()
 
 const { t } = useI18n()
 const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
-const { getStockStatusLabel, isSoldOut, hasPromotionPrice, getPromotionPriceAmount } = useProductLabels()
+const {
+  getStockStatusLabel,
+  getFulfillmentTypeLabel,
+  hasOrderFlowDeliveryTag,
+  isDisplayedAutoFulfillment,
+  isSoldOut,
+  hasPromotionPrice,
+  getPromotionPriceAmount,
+} = useProductLabels()
 
 const covers = [
   'bg-[linear-gradient(135deg,#7b74f2,var(--red))]',
@@ -78,6 +90,8 @@ const title = computed(() => getLocalizedText(props.product?.title))
 const categoryName = computed(() => getLocalizedText(props.product?.category?.name))
 const soldOut = computed(() => isSoldOut(props.product))
 const promo = computed(() => hasPromotionPrice(props.product))
+const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(props.product?.tags))
+const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(props.product?.fulfillment_type, hasOrderFlowDelivery.value))
 
 const imageErrored = ref(false)
 const coverImage = computed(() => {

@@ -2,6 +2,18 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../stores/app'
 import { amountToCents, centsToAmount } from '../utils/money'
+import {
+  getVisibleProductTags,
+  hasOrderFlowDeliveryTag,
+  isDisplayedAutoFulfillment,
+} from '../utils/orderFlow'
+
+export {
+  ORDER_FLOW_DELIVERY_TAG,
+  getVisibleProductTags,
+  hasOrderFlowDeliveryTag,
+  isDisplayedAutoFulfillment,
+} from '../utils/orderFlow'
 
 export function useLocalized() {
   const appStore = useAppStore()
@@ -38,8 +50,10 @@ export function useProductLabels() {
     return purchaseType === 'guest' ? t('productPurchase.guest') : t('productPurchase.member')
   }
 
-  const getFulfillmentTypeLabel = (fulfillmentType: string) => {
-    return fulfillmentType === 'auto' ? t('products.fulfillmentType.auto') : t('products.fulfillmentType.manual')
+  const getFulfillmentTypeLabel = (fulfillmentType: string, orderFlowDelivery = false) => {
+    return isDisplayedAutoFulfillment(fulfillmentType, orderFlowDelivery)
+      ? t('products.fulfillmentType.auto')
+      : t('products.fulfillmentType.manual')
   }
 
   const getStockBadgeVariant = (status: string): 'info' | 'warning' | 'destructive' | 'success' => {
@@ -197,6 +211,9 @@ export function useProductLabels() {
   return {
     getPurchaseTypeLabel,
     getFulfillmentTypeLabel,
+    hasOrderFlowDeliveryTag,
+    getVisibleProductTags,
+    isDisplayedAutoFulfillment,
     getStockBadgeVariant,
     getStockStatusLabel,
     isSoldOut,

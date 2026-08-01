@@ -35,9 +35,9 @@
       </Badge>
 
       <!-- Tags -->
-      <div v-if="!isSoldOut(product) && product.tags && product.tags.length > 0"
+      <div v-if="!isSoldOut(product) && visibleTags.length > 0"
         class="absolute top-2 right-2 md:top-4 md:right-4 z-20 flex flex-wrap gap-1 md:gap-2 justify-end">
-        <span v-for="(tag, tagIndex) in product.tags.slice(0, maxTags)" :key="tagIndex"
+        <span v-for="(tag, tagIndex) in visibleTags.slice(0, maxTags)" :key="tagIndex"
           class="inline-flex items-center rounded-md border border-white/25 bg-black/55 px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium text-white backdrop-blur-sm">
           {{ tag }}
         </span>
@@ -59,9 +59,9 @@
         <Badge
           class="md:hidden"
           size="xs"
-          :variant="product.fulfillment_type === 'auto' ? 'info' : 'neutral'"
+          :variant="displayedAutoFulfillment ? 'info' : 'neutral'"
         >
-          {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+          {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
         </Badge>
 
         <!-- Desktop: show all badges -->
@@ -78,11 +78,11 @@
         <Badge
           class="hidden md:inline-flex"
           size="xs"
-          :variant="product.fulfillment_type === 'auto' ? 'info' : 'neutral'"
+          :variant="displayedAutoFulfillment ? 'info' : 'neutral'"
         >
-          <Zap v-if="product.fulfillment_type === 'auto'" class="h-3 w-3" />
+          <Zap v-if="displayedAutoFulfillment" class="h-3 w-3" />
           <Pencil v-else class="h-3 w-3" />
-          {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+          {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
         </Badge>
 
         <Badge class="hidden md:inline-flex" size="xs" :variant="getStockBadgeVariant(product.stock_status)">
@@ -189,7 +189,24 @@ defineEmits<{
 
 const { t } = useI18n()
 const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
-const { getPurchaseTypeLabel, getFulfillmentTypeLabel, getStockBadgeVariant, getStockStatusLabel, isSoldOut, hasPromotionPrice, getPromotionPriceAmount, hasPromotionRules, hasWholesalePrices } = useProductLabels()
+const {
+  getPurchaseTypeLabel,
+  getFulfillmentTypeLabel,
+  hasOrderFlowDeliveryTag,
+  getVisibleProductTags,
+  isDisplayedAutoFulfillment,
+  getStockBadgeVariant,
+  getStockStatusLabel,
+  isSoldOut,
+  hasPromotionPrice,
+  getPromotionPriceAmount,
+  hasPromotionRules,
+  hasWholesalePrices,
+} = useProductLabels()
+
+const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(props.product?.tags))
+const visibleTags = computed(() => getVisibleProductTags(props.product?.tags))
+const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(props.product?.fulfillment_type, hasOrderFlowDelivery.value))
 
 const imageErrored = ref(false)
 const attemptIdx = ref(0)

@@ -48,8 +48,8 @@
           <div class="mb-1.5 flex flex-wrap gap-2">
             <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12.5px] font-semibold" :class="stockPillTone">{{ getStockStatusLabel(product) }}</span>
             <span class="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--teal-soft)] px-2.5 py-1 text-[12.5px] font-semibold text-[color:var(--teal-strong)]">
-              <component :is="product.fulfillment_type === 'auto' ? Zap : Pencil" class="h-3.5 w-3.5" />
-              {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+              <component :is="displayedAutoFulfillment ? Zap : Pencil" class="h-3.5 w-3.5" />
+              {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
             </span>
             <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12.5px] font-semibold" :class="product.purchase_type === 'guest' ? 'bg-[color:var(--gold-soft)] text-[color:var(--gold-strong)]' : 'bg-[color:var(--teal-soft)] text-[color:var(--teal-strong)]'">
               <component :is="product.purchase_type === 'guest' ? UserPlus : Lock" class="h-3.5 w-3.5" />
@@ -57,8 +57,8 @@
             </span>
           </div>
 
-          <div v-if="product.tags && product.tags.length" class="mb-1 flex flex-wrap gap-1.5">
-            <span v-for="(tag, i) in product.tags" :key="i" class="inline-flex items-center rounded-full bg-secondary px-2.5 py-1 text-[12.5px] font-semibold text-muted-foreground">{{ tag }}</span>
+          <div v-if="visibleProductTags.length" class="mb-1 flex flex-wrap gap-1.5">
+            <span v-for="(tag, i) in visibleProductTags" :key="i" class="inline-flex items-center rounded-full bg-secondary px-2.5 py-1 text-[12.5px] font-semibold text-muted-foreground">{{ tag }}</span>
           </div>
 
           <!-- 价格 -->
@@ -279,7 +279,8 @@ const setupMobileBarObserver = () => {
 
 const {
   getLocalizedText, siteCurrency, formatPrice,
-  getFulfillmentTypeLabel, getPurchaseTypeLabel, getStockStatusLabel, getStockBadgeVariant,
+  getFulfillmentTypeLabel, hasOrderFlowDelivery, visibleProductTags, displayedAutoFulfillment,
+  getPurchaseTypeLabel, getStockStatusLabel, getStockBadgeVariant,
   hasPromotionPrice, getPromotionPriceAmount, getPromotionSaveAmount,
   hasSkuPromotionPrice, getSkuPromotionSaveAmount,
   hasPromotionRules, getPromotionRules,

@@ -89,8 +89,8 @@
                 </h3>
 
                 <div class="mt-1.5 flex flex-wrap items-center gap-1">
-                  <Badge :variant="product.fulfillment_type === 'auto' ? 'info' : 'neutral'" size="xs">
-                    {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+                  <Badge :variant="displayedAutoFulfillment ? 'info' : 'neutral'" size="xs">
+                    {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
                   </Badge>
                   <Badge :variant="getStockBadgeVariant(product.stock_status)" size="xs">
                     {{ getStockStatusLabel(product) }}
@@ -364,6 +364,8 @@ const userProfileStore = useUserProfileStore()
 const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
 const {
   getFulfillmentTypeLabel,
+  hasOrderFlowDeliveryTag,
+  isDisplayedAutoFulfillment,
   getStockBadgeVariant,
   getStockStatusLabel,
   isSoldOut,
@@ -377,6 +379,9 @@ const {
   resolveWholesalePriceAmount,
   resolveMemberPriceAmount,
 } = useProductLabels()
+
+const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(props.product?.tags))
+const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(props.product?.fulfillment_type, hasOrderFlowDelivery.value))
 
 const selectedSkuId = ref(0)
 const quantity = ref(1)
@@ -756,6 +761,7 @@ const handleAddToCart = () => {
     maxPurchaseQuantity: normalizeOptionalLimitNumber(props.product.max_purchase_quantity) ?? undefined,
     purchaseType: props.product.purchase_type,
     fulfillmentType: props.product.fulfillment_type,
+    hasOrderFlowDeliveryTag: hasOrderFlowDelivery.value,
     manualFormSchema: props.product.manual_form_schema || {},
     paymentChannelIds: Array.isArray(props.product.payment_channel_ids) && props.product.payment_channel_ids.length > 0 ? props.product.payment_channel_ids : undefined,
     quantity: 1,
@@ -810,6 +816,7 @@ const handleBuyNow = () => {
     maxPurchaseQuantity: normalizeOptionalLimitNumber(props.product.max_purchase_quantity) ?? undefined,
     purchaseType: props.product.purchase_type,
     fulfillmentType: props.product.fulfillment_type,
+    hasOrderFlowDeliveryTag: hasOrderFlowDelivery.value,
     manualFormSchema: props.product.manual_form_schema || {},
     paymentChannelIds: Array.isArray(props.product.payment_channel_ids) && props.product.payment_channel_ids.length > 0 ? props.product.payment_channel_ids : undefined,
     quantity: quantity.value,

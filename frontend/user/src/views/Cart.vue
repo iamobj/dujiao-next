@@ -56,11 +56,11 @@
                         {{ item.purchaseType === 'guest' ? t('productPurchase.guest') : t('productPurchase.member') }}
                       </Badge>
                       <Badge
-                        :variant="item.fulfillmentType === 'auto' ? 'info' : 'neutral'"
+                        :variant="isDisplayedAutoFulfillment(item.fulfillmentType, item.hasOrderFlowDeliveryTag) ? 'info' : 'neutral'"
                         size="xs"
                         class="uppercase tracking-wider"
                       >
-                        {{ item.fulfillmentType === 'auto' ? t('products.fulfillmentType.auto') : t('products.fulfillmentType.manual') }}
+                        {{ getFulfillmentTypeLabel(item.fulfillmentType || '', item.hasOrderFlowDeliveryTag) }}
                       </Badge>
                     </div>
                   </div>
@@ -168,6 +168,7 @@ const { t } = useI18n()
 
 const {
   getLocalizedText, formatPrice, totalCurrency,
+  getFulfillmentTypeLabel, isDisplayedAutoFulfillment,
   cartItems, totalItems, totalAmount,
   cartItemKey, cartItemImage, itemSkuDisplay, itemSubtotal, itemStockHint, quantityWarning,
   itemPurchaseMin, itemMaxQuantity,

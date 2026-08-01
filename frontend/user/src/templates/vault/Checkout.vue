@@ -43,6 +43,7 @@
                 <div class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('checkout.quantityLabel') }}：{{ item.quantity }}</div>
                 <div v-if="itemSkuDisplay(item)" class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('checkout.skuLabel') }}：{{ itemSkuDisplay(item) }}</div>
                 <div v-if="itemStockHint(item)" class="mt-0.5 text-[12.5px]" :class="itemStockExceeded(item) ? 'text-warning' : 'text-muted-foreground'">{{ itemStockHint(item) }}</div>
+                <div class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('orderDetail.itemFulfillmentLabel') }}：{{ getFulfillmentTypeLabel(item.fulfillmentType || '', item.hasOrderFlowDeliveryTag) }}</div>
               </div>
               <div class="flex-none text-right">
                 <span class="inline-flex items-baseline font-bold" :class="checkoutItemHasPriceDiscount(item) ? 'text-primary' : 'text-foreground'">
@@ -213,6 +214,7 @@ const { t } = useI18n()
 
 const {
   userAuthStore, getLocalizedText, formatPrice, getImageUrl,
+  getFulfillmentTypeLabel,
   isBuyNowMode, cartItems, totalItems, cartItemKey, checkoutItemImage, itemSkuDisplay,
   itemStockExceeded, itemStockHint,
   checkoutItemCurrency, checkoutItemPriceParts, checkoutItemOriginalPriceParts, checkoutItemHasPriceDiscount,

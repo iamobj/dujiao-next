@@ -38,7 +38,7 @@
                 <p v-if="itemStockHint(item)" class="mt-1 text-[13px] text-muted-foreground">{{ itemStockHint(item) }}</p>
                 <div class="mt-2 flex flex-wrap gap-1.5">
                   <Badge :variant="item.purchaseType === 'guest' ? 'warning' : 'info'" size="sm" class="rounded-full">{{ item.purchaseType === 'guest' ? t('productPurchase.guest') : t('productPurchase.member') }}</Badge>
-                  <Badge variant="success" size="sm" class="rounded-full">{{ item.fulfillmentType === 'auto' ? t('products.fulfillmentType.auto') : t('products.fulfillmentType.manual') }}</Badge>
+                  <Badge :variant="isDisplayedAutoFulfillment(item.fulfillmentType, item.hasOrderFlowDeliveryTag) ? 'success' : 'neutral'" size="sm" class="rounded-full">{{ getFulfillmentTypeLabel(item.fulfillmentType || '', item.hasOrderFlowDeliveryTag) }}</Badge>
                 </div>
               </div>
               <button type="button" class="grid h-10 w-10 flex-none place-items-center rounded-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive" :aria-label="t('cart.remove')" @click="removeWithUndo(item)">
@@ -103,6 +103,7 @@ const { t } = useI18n()
 
 const {
   getLocalizedText, formatPrice, totalCurrency,
+  getFulfillmentTypeLabel, isDisplayedAutoFulfillment,
   cartItems, totalItems, totalAmount,
   cartItemKey, cartItemImage, itemSkuDisplay, itemSubtotal, itemStockHint, quantityWarning,
   itemPurchaseMin, itemMaxQuantity,

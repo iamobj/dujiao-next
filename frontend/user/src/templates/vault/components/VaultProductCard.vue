@@ -8,8 +8,8 @@
         <img v-if="coverImage" :src="coverImage" :alt="title" loading="lazy" class="absolute inset-0 h-full w-full object-cover" @error="imageErrored = true" />
         <Package v-else class="relative z-[1] h-[58px] w-[58px] text-white" />
         <!-- 商家标签浮层 -->
-        <div v-if="!soldOut && product.tags && product.tags.length" class="absolute right-1.5 top-1.5 z-[3] flex max-w-[80%] flex-wrap justify-end gap-1">
-          <span v-for="(tag, i) in product.tags.slice(0, 2)" :key="i" class="inline-flex max-w-full items-center truncate rounded-md border border-white/25 bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">{{ tag }}</span>
+        <div v-if="!soldOut && visibleTags.length" class="absolute right-1.5 top-1.5 z-[3] flex max-w-[80%] flex-wrap justify-end gap-1">
+          <span v-for="(tag, i) in visibleTags.slice(0, 2)" :key="i" class="inline-flex max-w-full items-center truncate rounded-md border border-white/25 bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">{{ tag }}</span>
         </div>
       </span>
       <div class="flex min-w-0 flex-col gap-0.5 px-1">
@@ -21,8 +21,8 @@
     <!-- 属性徽章：交付方式 · 购买类型 · 库存 -->
     <div class="mx-1 flex flex-wrap items-center gap-1.5">
       <span class="inline-flex items-center gap-1 rounded-full bg-[color:var(--teal-soft)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--teal-strong)]">
-        <component :is="product.fulfillment_type === 'auto' ? Zap : Pencil" class="h-3 w-3" />
-        {{ getFulfillmentTypeLabel(product.fulfillment_type) }}
+        <component :is="displayedAutoFulfillment ? Zap : Pencil" class="h-3 w-3" />
+        {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
       </span>
       <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="product.purchase_type === 'guest' ? 'bg-[color:var(--gold-soft)] text-[color:var(--gold-strong)]' : 'bg-[color:var(--teal-soft)] text-[color:var(--teal-strong)]'">
         <component :is="product.purchase_type === 'guest' ? UserPlus : Lock" class="h-3 w-3" />
@@ -75,6 +75,7 @@ const { t } = useI18n()
 const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
 const {
   getStockStatusLabel, getPurchaseTypeLabel, getFulfillmentTypeLabel,
+  hasOrderFlowDeliveryTag, getVisibleProductTags, isDisplayedAutoFulfillment,
   isSoldOut, hasPromotionPrice, getPromotionPriceAmount, hasWholesalePrices, hasPromotionRules,
 } = useProductLabels()
 
@@ -92,6 +93,9 @@ const title = computed(() => getLocalizedText(props.product?.title))
 const categoryName = computed(() => getLocalizedText(props.product?.category?.name))
 const soldOut = computed(() => isSoldOut(props.product))
 const promo = computed(() => hasPromotionPrice(props.product))
+const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(props.product?.tags))
+const visibleTags = computed(() => getVisibleProductTags(props.product?.tags))
+const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(props.product?.fulfillment_type, hasOrderFlowDelivery.value))
 
 const imageErrored = ref(false)
 const coverImage = computed(() => {

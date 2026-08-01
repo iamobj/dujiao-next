@@ -172,10 +172,10 @@
                   <div class="text-xs text-muted-foreground">{{ t('orderDetail.quantityLabel') }}：{{ item.quantity }}</div>
                   <div v-if="orderItemSkuText(item)" class="text-xs text-muted-foreground mt-1">{{ t('orderDetail.itemSkuLabel') }}：{{ orderItemSkuText(item) }}</div>
                   <div class="text-xs text-muted-foreground mt-1">
-                    {{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type) }}
+                    {{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type, hasOrderFlowDeliveryTag(item.tags)) }}
                   </div>
-                  <div v-if="item.tags && item.tags.length" class="mt-2 flex flex-wrap gap-2">
-                    <Badge v-for="(tag, index) in item.tags" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
+                  <div v-if="getVisibleProductTags(item.tags).length" class="mt-2 flex flex-wrap gap-2">
+                    <Badge v-for="(tag, index) in getVisibleProductTags(item.tags)" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
                   </div>
                   <div v-if="manualSubmissionRows(item.manual_form_submission, item.manual_form_schema_snapshot).length"
                     class="mt-3 rounded-xl border border-gray-200 bg-white p-3 text-xs text-gray-600 dark:border-white/10 dark:bg-black/30 dark:text-gray-300">
@@ -257,10 +257,10 @@
                         <div class="text-xs text-muted-foreground">{{ t('orderDetail.quantityLabel') }}：{{ item.quantity }}</div>
                         <div v-if="orderItemSkuText(item)" class="text-xs text-muted-foreground mt-1">{{ t('orderDetail.itemSkuLabel') }}：{{ orderItemSkuText(item) }}</div>
                         <div class="text-xs text-muted-foreground mt-1">
-                          {{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type) }}
+                          {{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type, hasOrderFlowDeliveryTag(item.tags)) }}
                         </div>
-                        <div v-if="item.tags && item.tags.length" class="mt-2 flex flex-wrap gap-2">
-                          <Badge v-for="(tag, index) in item.tags" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
+                        <div v-if="getVisibleProductTags(item.tags).length" class="mt-2 flex flex-wrap gap-2">
+                          <Badge v-for="(tag, index) in getVisibleProductTags(item.tags)" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
                         </div>
                         <div v-if="manualSubmissionRows(item.manual_form_submission, item.manual_form_schema_snapshot).length"
                           class="mt-3 rounded-xl border border-gray-200 bg-white p-3 text-xs text-gray-600 dark:border-white/10 dark:bg-black/30 dark:text-gray-300">
@@ -432,6 +432,7 @@ const {
   order, authError, auth, viewState, handleAuthSubmit, clearAuth,
   fulfillmentDownloading, handleDownloadFulfillment,
   statusLabel, statusVariant, fulfillmentTypeLabelText, fulfillmentStatusLabelText,
+  hasOrderFlowDeliveryTag, getVisibleProductTags,
   formatDate, getLocalizedText, formatMoney, formatDiscountMoney, hasDiscountAmount,
   refundReasonText, showRefundRecordsCard, refundRecords, showTimeCard,
   orderItemImage, orderItemSkuText, manualSubmissionRows,

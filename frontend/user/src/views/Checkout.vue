@@ -59,6 +59,9 @@
                     >
                       {{ itemStockHint(item) }}
                     </div>
+                    <div class="mt-1 text-xs text-muted-foreground">
+                      {{ t('orderDetail.itemFulfillmentLabel') }}：{{ getFulfillmentTypeLabel(item.fulfillmentType || '', item.hasOrderFlowDeliveryTag) }}
+                    </div>
                     <div class="mt-2 flex flex-wrap items-baseline gap-3">
                       <span
                         class="inline-flex items-baseline whitespace-nowrap"
@@ -328,6 +331,7 @@ const { t } = useI18n()
 
 const {
   userAuthStore, getLocalizedText, formatPrice, getImageUrl,
+  getFulfillmentTypeLabel,
   isBuyNowMode, cartItems, totalItems, cartItemKey, checkoutItemImage, itemSkuDisplay,
   itemStockExceeded, itemStockHint,
   checkoutItemCurrency, checkoutItemPriceParts, checkoutItemOriginalPriceParts, checkoutItemHasPriceDiscount,

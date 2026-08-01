@@ -10,7 +10,7 @@ import {
   cartItemPurchaseMin as itemPurchaseMin,
 } from '../utils/cartStock'
 import { getImageUrl } from '../utils/image'
-import { useLocalized } from './useProduct'
+import { useLocalized, useProductLabels } from './useProduct'
 import { toast } from './useToast'
 
 /**
@@ -23,6 +23,7 @@ export function useCart() {
   const { t } = useI18n()
 
   const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
+  const { getFulfillmentTypeLabel, isDisplayedAutoFulfillment } = useProductLabels()
   const totalCurrency = computed(() => siteCurrency.value || 'CNY')
 
   const cartItems = computed(() => cartStore.items)
@@ -193,6 +194,8 @@ export function useCart() {
     // helpers / formatters
     getLocalizedText,
     formatPrice,
+    getFulfillmentTypeLabel,
+    isDisplayedAutoFulfillment,
     totalCurrency,
     // state
     cartItems,

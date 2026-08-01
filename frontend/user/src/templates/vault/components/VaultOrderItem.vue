@@ -16,9 +16,9 @@
         <div class="font-bold">{{ getLocalizedText(item.title) }}</div>
         <div class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('orderDetail.quantityLabel') }}：{{ item.quantity }}</div>
         <div v-if="orderItemSkuText(item)" class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('orderDetail.itemSkuLabel') }}：{{ orderItemSkuText(item) }}</div>
-        <div class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type) }}</div>
-        <div v-if="item.tags && item.tags.length" class="mt-2 flex flex-wrap gap-1.5">
-          <Badge v-for="(tag, index) in item.tags" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
+        <div class="mt-0.5 text-[12.5px] text-muted-foreground">{{ t('orderDetail.itemFulfillmentLabel') }}：{{ fulfillmentTypeLabelText(item.fulfillment_type, hasOrderFlowDeliveryTag(item.tags)) }}</div>
+        <div v-if="getVisibleProductTags(item.tags).length" class="mt-2 flex flex-wrap gap-1.5">
+          <Badge v-for="(tag, index) in getVisibleProductTags(item.tags)" :key="index" variant="neutral" size="sm" class="rounded-full">{{ tag }}</Badge>
         </div>
         <div v-if="manualSubmissionRows(item.manual_form_submission, item.manual_form_schema_snapshot).length" class="mt-2.5 rounded-sm border bg-secondary px-3 py-2.5 text-[12.5px] text-muted-foreground">
           <div class="mb-1.5 font-bold text-muted-foreground">{{ t('orderDetail.manualSubmissionTitle') }}</div>
@@ -56,7 +56,7 @@ defineProps<{
 const { t } = useI18n()
 
 const {
-  getLocalizedText, orderItemImage, orderItemSkuText, fulfillmentTypeLabelText, manualSubmissionRows,
+  getLocalizedText, orderItemImage, orderItemSkuText, fulfillmentTypeLabelText, hasOrderFlowDeliveryTag, getVisibleProductTags, manualSubmissionRows,
   formatMoney, hasDiscountAmount, formatDiscountMoney, hasItemDiscount, formatItemDiscountTotal, formatItemPaidAmount,
 } = useOrderDisplayHelpers(ref<any>(null))
 </script>

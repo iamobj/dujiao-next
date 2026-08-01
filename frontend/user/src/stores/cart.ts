@@ -29,6 +29,7 @@ export interface CartItem {
     maxPurchaseQuantity?: number
     purchaseType?: string
     fulfillmentType?: string
+    hasOrderFlowDeliveryTag?: boolean
     manualFormSchema?: any
     paymentChannelIds?: number[]
 }
@@ -113,6 +114,7 @@ const loadCartItems = (): CartItem[] => {
                     skuStockSnapshotAt: normalizeOptionalString(row.skuStockSnapshotAt ?? row.sku_stock_snapshot_at),
                     minPurchaseQuantity: normalizeOptionalLimitNumber(row.minPurchaseQuantity ?? row.min_purchase_quantity),
                     maxPurchaseQuantity: normalizeOptionalLimitNumber(row.maxPurchaseQuantity ?? row.max_purchase_quantity),
+                    hasOrderFlowDeliveryTag: normalizeOptionalBoolean(row.hasOrderFlowDeliveryTag ?? row.has_order_flow_delivery_tag),
                 } as CartItem
             })
             .filter(Boolean) as CartItem[]
@@ -151,6 +153,7 @@ export const useCartStore = defineStore('cart', () => {
             skuStockSnapshotAt: normalizeOptionalString(item.skuStockSnapshotAt) || new Date().toISOString(),
             minPurchaseQuantity: normalizeOptionalLimitNumber(item.minPurchaseQuantity),
             maxPurchaseQuantity: normalizeOptionalLimitNumber(item.maxPurchaseQuantity),
+            hasOrderFlowDeliveryTag: normalizeOptionalBoolean(item.hasOrderFlowDeliveryTag),
         }
         const qty = clampCartQuantity(quantity, normalizedItem.maxPurchaseQuantity, normalizedItem.minPurchaseQuantity)
         const identity = cartIdentity(normalizedItem)
@@ -166,6 +169,7 @@ export const useCartStore = defineStore('cart', () => {
             existing.maxPurchaseQuantity = normalizedItem.maxPurchaseQuantity
             existing.purchaseType = normalizedItem.purchaseType
             existing.fulfillmentType = normalizedItem.fulfillmentType
+            existing.hasOrderFlowDeliveryTag = normalizedItem.hasOrderFlowDeliveryTag
             existing.manualFormSchema = normalizedItem.manualFormSchema
             existing.skuId = normalizedItem.skuId
             existing.skuCode = normalizedItem.skuCode
@@ -223,6 +227,7 @@ export const useCartStore = defineStore('cart', () => {
         target.skuStockSnapshotAt = normalizeOptionalString(target.skuStockSnapshotAt)
         target.minPurchaseQuantity = normalizeOptionalLimitNumber(target.minPurchaseQuantity)
         target.maxPurchaseQuantity = normalizeOptionalLimitNumber(target.maxPurchaseQuantity)
+        target.hasOrderFlowDeliveryTag = normalizeOptionalBoolean(target.hasOrderFlowDeliveryTag)
         persist()
     }
 

@@ -21,7 +21,7 @@ export function useRegister() {
 
   const brandSiteName = computed(() => {
     const siteName = String(appStore.config?.brand?.site_name || '').trim()
-    return siteName !== '' ? siteName : 'Dujiao-Next'
+    return siteName
   })
 
   const email = ref('')
@@ -30,7 +30,6 @@ export function useRegister() {
   const password = ref('')
   const showPassword = ref(false)
   const code = ref('')
-  const agreed = ref(false)
 
   const passwordStrength = computed(() => getPasswordStrength(password.value))
   const error = ref('')
@@ -199,16 +198,12 @@ export function useRegister() {
     const currentEmail = registrationEmail.value
     if (!formValidation.validateAll({ email: currentEmail, password: password.value })) return
     if (emailVerificationEnabled.value && !code.value) return
-    if (!agreed.value) {
-      error.value = t('auth.register.errors.agreementRequired')
-      return
-    }
     try {
       await userAuthStore.register({
         email: currentEmail,
         password: password.value,
         code: emailVerificationEnabled.value ? code.value : '',
-        agreement_accepted: agreed.value,
+        agreement_accepted: true,
       })
       router.push('/me/orders')
     } catch (err: any) {
@@ -232,7 +227,6 @@ export function useRegister() {
     password,
     showPassword,
     code,
-    agreed,
     passwordStrength,
     error,
     sending,

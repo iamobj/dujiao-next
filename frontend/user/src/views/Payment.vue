@@ -311,7 +311,7 @@
                   <div class="text-foreground font-medium">{{ getLocalizedText(item.title) }}</div>
                   <div class="text-xs text-muted-foreground mt-1">
                     {{ t('orderDetail.quantityLabel') }}：{{ item.quantity }} · {{ t('orderDetail.itemFulfillmentLabel') }}：{{
-                      fulfillmentTypeLabelText(item.fulfillment_type) }}
+                      fulfillmentTypeLabelText(item.fulfillment_type, hasOrderFlowDeliveryTag(item.tags)) }}
                   </div>
                   <div v-if="orderItemSkuText(item)" class="text-xs text-muted-foreground mt-1">
                     {{ t('orderDetail.itemSkuLabel') }}：{{ orderItemSkuText(item) }}
@@ -531,6 +531,7 @@ const {
   expectedWalletPaidDisplay, expectedOnlinePayDisplay, expectedOnlinePayCents, requiresOnlineChannel,
   paymentWalletPaidDisplay, paymentOnlinePayDisplay, isChannelDisabledForAmount, channelAmountLimitHint, canSubmitPayment,
   formatDate, statusLabel, formatMoney, hasDiscountAmount, formatDiscountMoney, getLocalizedText, orderItemSkuText, fulfillmentTypeLabelText,
+  hasOrderFlowDeliveryTag,
   formatChannelFeeRate, formatChannelFixedFee,
   handleCopyPayLink, handleCopyWalletAddress, handleOpenPayLink, restoreCachedPayment, handleChangePaymentMethod,
   handlePayment, handleGuestAuthSubmit, handleRefresh,

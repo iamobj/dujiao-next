@@ -19,6 +19,7 @@ import {
 import QRCode from 'qrcode'
 import { type PageAlert } from '../utils/alerts'
 import { loadGuestOrderAuth, saveGuestOrderAuth } from '../utils/guestOrderAuth'
+import { getVisibleProductTags, hasOrderFlowDeliveryTag } from './useProduct'
 
 /**
  * 支付页共享逻辑（classic + vault 双模板共用）。
@@ -1207,7 +1208,7 @@ export function usePayment() {
     })
   }
 
-  const fulfillmentTypeLabelText = (type: string) => fulfillmentTypeLabel(t, type, 'orderDetail')
+  const fulfillmentTypeLabelText = (type: string, displayAsAuto = false) => fulfillmentTypeLabel(t, type, 'orderDetail', displayAsAuto)
 
   const channelTypeLabel = (value?: string) => {
     const map: Record<string, string> = {
@@ -1459,6 +1460,8 @@ export function usePayment() {
     getLocalizedText,
     orderItemSkuText,
     fulfillmentTypeLabelText,
+    hasOrderFlowDeliveryTag,
+    getVisibleProductTags,
     formatChannelFeeRate,
     formatChannelFixedFee,
     // actions
