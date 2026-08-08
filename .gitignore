@@ -20,3 +20,7 @@ frontend/*/*.local
 internal/web/dist/
 
 .codebase-memory
+
+# Agents 配置
+.agents/
+skills-lock.json
