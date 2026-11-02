@@ -21,14 +21,24 @@
         <span v-if="categoryName" class="hidden flex-none text-muted-foreground/40 sm:inline">·</span>
         <h3 class="truncate text-sm font-bold text-foreground">{{ title }}</h3>
       </div>
-      <span class="inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="stockPill.tone">
-        <component :is="stockPill.icon" class="h-3 w-3" />
-        {{ stockPill.label }}
-      </span>
-      <span class="inline-flex w-fit items-center gap-1 rounded-full bg-[color:var(--teal-soft)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--teal-strong)]">
-        <component :is="displayedAutoFulfillment ? Zap : Pencil" class="h-3 w-3" />
-        {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
-      </span>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="stockPill.tone">
+          <component :is="stockPill.icon" class="h-3 w-3" />
+          {{ stockPill.label }}
+        </span>
+        <span class="inline-flex items-center gap-1 rounded-full bg-[color:var(--teal-soft)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--teal-strong)]">
+          <component :is="displayedAutoFulfillment ? Zap : Pencil" class="h-3 w-3" />
+          {{ getFulfillmentTypeLabel(product.fulfillment_type, hasOrderFlowDelivery) }}
+        </span>
+        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="product.purchase_type === 'guest' ? 'bg-[color:var(--gold-soft)] text-[color:var(--gold-strong)]' : 'bg-[color:var(--teal-soft)] text-[color:var(--teal-strong)]'">
+          <component :is="product.purchase_type === 'guest' ? UserPlus : Lock" class="h-3 w-3" />
+          {{ getPurchaseTypeLabel(product.purchase_type) }}
+        </span>
+        <span v-if="priceSignal" class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="priceSignal.tone">{{ priceSignal.label }}</span>
+        <template v-if="!soldOut && visibleTags.length">
+          <span v-for="(tag, i) in visibleTags.slice(0, 2)" :key="i" class="inline-flex max-w-[120px] items-center truncate rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">{{ tag }}</span>
+        </template>
+      </div>
     </div>
 
     <!-- Price + actions -->
@@ -57,7 +67,7 @@
 <script setup lang="ts">
 import { computed, ref, type Component } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AlarmClock, ChevronRight, Package, Pencil, ShoppingCart, XCircle, Zap } from 'lucide-vue-next'
+import { AlarmClock, ChevronRight, Lock, Package, Pencil, ShoppingCart, UserPlus, XCircle, Zap } from 'lucide-vue-next'
 import { getFirstImageUrl, getImageUrl } from '../../../utils/image'
 import { useLocalized, useProductLabels } from '../../../composables/useProduct'
 
@@ -68,13 +78,9 @@ defineEmits<{ quickBuy: [product: any] }>()
 const { t } = useI18n()
 const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
 const {
-  getStockStatusLabel,
-  getFulfillmentTypeLabel,
-  hasOrderFlowDeliveryTag,
-  isDisplayedAutoFulfillment,
-  isSoldOut,
-  hasPromotionPrice,
-  getPromotionPriceAmount,
+  getStockStatusLabel, getPurchaseTypeLabel, getFulfillmentTypeLabel,
+  hasOrderFlowDeliveryTag, getVisibleProductTags, isDisplayedAutoFulfillment,
+  isSoldOut, hasPromotionPrice, getPromotionPriceAmount, hasWholesalePrices, hasPromotionRules,
 } = useProductLabels()
 
 const covers = [
@@ -92,6 +98,7 @@ const soldOut = computed(() => isSoldOut(props.product))
 const promo = computed(() => hasPromotionPrice(props.product))
 const hasOrderFlowDelivery = computed(() => hasOrderFlowDeliveryTag(props.product?.tags))
 const displayedAutoFulfillment = computed(() => isDisplayedAutoFulfillment(props.product?.fulfillment_type, hasOrderFlowDelivery.value))
+const visibleTags = computed(() => getVisibleProductTags(props.product?.tags))
 
 const imageErrored = ref(false)
 const coverImage = computed(() => {
@@ -110,5 +117,13 @@ const stockPill = computed<{ tone: string; icon: Component; label: string }>(() 
     return { tone: 'bg-[color:var(--gold-soft)] text-[color:var(--gold-strong)]', icon: AlarmClock, label: getStockStatusLabel(props.product) }
   }
   return { tone: 'bg-[color:var(--teal-soft)] text-[color:var(--teal-strong)]', icon: Zap, label: getStockStatusLabel(props.product) }
+})
+
+// 价签徽章：促销 / 批发 / 活动（与卡片模式一致）
+const priceSignal = computed<{ tone: string; label: string } | null>(() => {
+  if (promo.value) return { tone: 'bg-primary/10 text-primary', label: t('products.promotionTag') }
+  if (hasWholesalePrices(props.product)) return { tone: 'bg-[color:var(--teal-soft)] text-[color:var(--teal-strong)]', label: t('products.wholesaleTag') }
+  if (hasPromotionRules(props.product)) return { tone: 'bg-[color:var(--gold-soft)] text-[color:var(--gold-strong)]', label: t('products.promotionBadge') }
+  return null
 })
 </script>
